@@ -34,7 +34,7 @@ sint32  CUdpSocket::udpSock(const uint32 uiSerIP, const uint16 usPort)
 		udpClose();
 		return -1;
 	}
-
+    
     m_stSerAddr.sin_family = AF_INET;
     m_stSerAddr.sin_port   = htons(usPort);
 	if(uiSerIP)

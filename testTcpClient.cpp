@@ -9,8 +9,9 @@
 #include "types.h"
 
 #define   SERVER_IP     "127.0.0.1"
-#define   SERVER_PORT   6000
+#define   SERVER_PORT   6600
 #define   BUFFER_LEN    256
+
 int main()
 {
 	CTcpSocket oTcpSocket;
@@ -34,9 +35,17 @@ int main()
 		oTcpSocket.tcpSnd(iClientSock, strTemp, strlen(strTemp));
 		
 		iLen = sizeof(strTemp);
-		oTcpSocket.tcpRcv(iClientSock, strTemp, iLen);
+		sint32 iRecvLen = oTcpSocket.tcpRcv(iClientSock, strTemp, iLen);
 		
-		ELOG("recv from server %s\n", strTemp);
+		if (iRecvLen > 0)
+		{
+			ELOG("recv from server %s\n", strTemp);
+		}
+		else
+		{
+			ENPLOG;
+		}
+		
 	}
 	
 	close(iClientSock);

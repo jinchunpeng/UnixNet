@@ -3,20 +3,23 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
 
 #define   SERVER_IP    "0.0.0.0" 
-#define   SERVER_PORT  6000
+#define   SERVER_PORT  6600
 #define   BUFFER_LEN   256
 
 void cmdHandle(sint32 iSock,  CTcpSocket* pTcpSocket)
 {
 	char strTemp[BUFFER_LEN];
-	sint32 iLen;
+	sint32 iLen = sizeof(strTemp);   //这里的iLen需要初始化为buff的长度
 	while ( (iLen = pTcpSocket->tcpRcv(iSock, strTemp, iLen) ) > 0 )
 	{
 		//ELOG("");
 		pTcpSocket->tcpSnd(iSock, strTemp, iLen);
 	}
+	
+	ILOG("iLen = %d\n", iLen);
 	ELOG("disconnect\n");
 	close(iSock);
 }
@@ -36,7 +39,7 @@ int main(int argn, char **argv)
 		
 		if (iAcceptSock < 0)
 		{
-			ENPLOG;
+			ILOG("accept ret = %d\n", iAcceptSock);
 			close(iTcpSock);
 			return 0;
 		}

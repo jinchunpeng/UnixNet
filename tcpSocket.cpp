@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <errno.h>
 #include "tcpSocket.h"
 
 CTcpSocket::~CTcpSocket()
@@ -25,6 +26,8 @@ sint32 CTcpSocket::tcpSock(const char *pAdr, uint16 usPort)
 	bzero(&tLocAddr, sizeof(tLocAddr));
 
 	//inet_pton(AF_INET, pAdr, &tLocAddr.sin_addr);
+	tLocAddr.sin_family = AF_INET;    //未进行初始化，绑定失败
+	//tLocAddr.sin_family = 0;
 	tLocAddr.sin_addr.s_addr  = inet_addr(pAdr);
 	tLocAddr.sin_port = htons(usPort);
 
@@ -35,6 +38,7 @@ sint32 CTcpSocket::tcpSock(const char *pAdr, uint16 usPort)
 	}
 
 	sint32 iRet = bind(iSkt, (sockaddr *)&tLocAddr, sizeof(tLocAddr));
+	ILOG("ERROR = %s\n", strerror(errno));
 	CHK_UNEQ_RETURN(iRet, 0, -1);
 
 	iRet = listen(iSkt, 1024);
