@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <errno.h>
+#include <string.h>
 
 #define   SERVER_IP    "0.0.0.0" 
 #define   SERVER_PORT  6600
@@ -34,12 +36,13 @@ int main(int argn, char **argv)
 	while(1)
 	{
 		sockaddr_in oAddr;
-		sint32      iLen;
+		sint32      iLen = sizeof(oAddr);
+		
 		sint32 iAcceptSock = oTcpSocket.tcpAccept(iTcpSock, &oAddr, iLen);
 		
 		if (iAcceptSock < 0)
 		{
-			ILOG("accept ret = %d\n", iAcceptSock);
+			ILOG("accept ret = %d errno = %s\n", iAcceptSock, strerror(errno));
 			close(iTcpSock);
 			return 0;
 		}
